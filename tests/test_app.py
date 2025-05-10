@@ -1,3 +1,5 @@
+from http import HTTPStatus
+
 from fastapi.testclient import TestClient
 
 from fastapi_zero.app import app
@@ -17,3 +19,4 @@ def test_read_deve_retornar_ola_mundo():
     response = client.get("/")
     # Assert
     assert response.json() == {"message": "Olá, Mundo!"}
+    assert response.status_code == HTTPStatus.OK
