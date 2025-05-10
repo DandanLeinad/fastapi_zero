@@ -123,3 +123,4 @@ dmypy.json
 # My project
 .coverage
 .ruff_cache/
+.github/
