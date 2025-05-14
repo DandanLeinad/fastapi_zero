@@ -1,9 +1,10 @@
 from http import HTTPStatus
 
-from fastapi_zero.schemas import Message
 from fastapi import FastAPI
 
-app = FastAPI()
+from fastapi_zero.schemas import Message
+
+app = FastAPI(title="FastAPI Zero")
 
 
 @app.get("/", status_code=HTTPStatus.OK, response_model=Message)
