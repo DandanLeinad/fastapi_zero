@@ -2,7 +2,7 @@ from http import HTTPStatus
 
 from fastapi import FastAPI
 
-from fastapi_zero.schemas import Message, UserPublic, UserSchema
+from fastapi_zero.schemas import Message, UserDB, UserPublic, UserSchema
 
 app = FastAPI(title="FastAPI Zero")
 database = []
@@ -15,4 +15,10 @@ def read_root():
 
 @app.post("/users/", status_code=HTTPStatus.CREATED, response_model=UserPublic)
 def create_user(user: UserSchema):
-    return user
+    user_with_id = UserDB(
+        id=len(database) + 1,
+        username=user.username,
+        email=user.email,
+        password=user.password,
+    )
+    return user_with_id
