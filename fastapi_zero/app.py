@@ -2,7 +2,7 @@ from http import HTTPStatus
 
 from fastapi import FastAPI
 
-from fastapi_zero.schemas import Message, UserSchema
+from fastapi_zero.schemas import Message, UserPublic, UserSchema
 
 app = FastAPI(title="FastAPI Zero")
 
@@ -12,6 +12,6 @@ def read_root():
     return {"message": "Olá Mundo!"}
 
 
-@app.post("/users/", status_code=HTTPStatus.CREATED, response_model=UserSchema)
+@app.post("/users/", status_code=HTTPStatus.CREATED, response_model=UserPublic)
 def create_user(user: UserSchema):
     return user
