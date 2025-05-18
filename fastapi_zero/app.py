@@ -21,4 +21,5 @@ def create_user(user: UserSchema):
         email=user.email,
         password=user.password,
     )
+    database.append(user_with_id)
     return user_with_id
