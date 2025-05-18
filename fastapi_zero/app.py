@@ -5,6 +5,7 @@ from fastapi import FastAPI
 from fastapi_zero.schemas import Message, UserPublic, UserSchema
 
 app = FastAPI(title="FastAPI Zero")
+database = []
 
 
 @app.get("/", status_code=HTTPStatus.OK, response_model=Message)
