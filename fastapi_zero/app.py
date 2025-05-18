@@ -35,4 +35,6 @@ def read_users():
     "/users/{user_id}", status_code=HTTPStatus.OK, response_model=UserPublic
 )
 def update_user(user: UserSchema, user_id: int):
-    breakpoint()  # noqa: T201
+    user_with_id = UserDB(id=user_id, **user.model_dump())
+    database[user_id - 1] = user_with_id
+    return user_with_id
