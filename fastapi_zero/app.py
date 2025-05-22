@@ -1,9 +1,9 @@
 from http import HTTPStatus
 
-from database import get_session
 from fastapi import Depends, FastAPI, HTTPException
 from sqlalchemy import select
 
+from fastapi_zero.database import get_session
 from fastapi_zero.models import User
 from fastapi_zero.schemas import (
     Message,
