@@ -1,7 +1,7 @@
 from http import HTTPStatus
 
 from database import get_session
-from fastapi import FastAPI, HTTPException
+from fastapi import Depends, FastAPI, HTTPException
 from sqlalchemy import select
 
 from fastapi_zero.models import User
@@ -23,8 +23,7 @@ def read_root():
 
 
 @app.post("/users/", status_code=HTTPStatus.CREATED, response_model=UserPublic)
-def create_user(user: UserSchema):
-    session = get_session()
+def create_user(user: UserSchema, session=Depends(get_session)):
 
     db_user = session.scalar(
         select(User).where(
