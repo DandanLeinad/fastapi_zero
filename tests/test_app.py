@@ -1,5 +1,7 @@
 from http import HTTPStatus
 
+from fastapi_zero.schemas import UserPublic
+
 
 def test_read_deve_retornar_ola_mundo(client):
     """
@@ -38,6 +40,12 @@ def test_read_users(client):
 
     assert response.status_code == HTTPStatus.OK
     assert response.json() == {"users": []}
+
+
+def test_read_users_with_users(client, user):
+    user_schema = UserPublic.model_validate(user).model_dump()
+    response = client.get("/users/")
+    assert response.json() == {"users": [user_schema]}
 
 
 def test_update_user(client):
