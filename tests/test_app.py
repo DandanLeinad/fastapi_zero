@@ -142,3 +142,29 @@ def test_update_integrity_error(client, user):
     assert response_update.json() == {
         "detail": "Username or Email already exists"
     }
+
+
+def test_create_user_username_conflict(client, user):
+    response = client.post(
+        "/users/",
+        json={
+            "username": user.username,
+            "email": "unique@example.com",
+            "password": "secret",
+        },
+    )
+    assert response.status_code == HTTPStatus.CONFLICT
+    assert response.json()["detail"] == "Username already exists"
+
+
+def test_create_user_email_conflict(client, user):
+    response = client.post(
+        "/users/",
+        json={
+            "username": "uniqueuser",
+            "email": user.email,
+            "password": "secret",
+        },
+    )
+    assert response.status_code == HTTPStatus.CONFLICT
+    assert response.json()["detail"] == "Email already exists"
