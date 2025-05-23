@@ -133,7 +133,7 @@ def test_update_integrity_error(client, user):
     )
 
     # Alterando o user.username das fixture para fausto
-    client.put(
+    response_update = client.put(
         f"/users/{user.id}",
         json={
             "username": "fausto",
@@ -141,3 +141,8 @@ def test_update_integrity_error(client, user):
             "password": "mynewpassword",
         },
     )
+
+    assert response_update.status_code == HTTPStatus.CONFLICT
+    assert response_update.json() == {
+        "detail": "Username or Email already exists"
+    }
