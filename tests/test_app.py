@@ -70,11 +70,7 @@ def test_delete_user(client, user):
     response = client.delete("/users/1")
 
     assert response.status_code == HTTPStatus.OK
-    assert response.json() == {
-        "id": 1,
-        "username": "Teste",
-        "email": "teste@test.com",
-    }
+    assert response.json() == {"message": "User deleted"}
 
 
 def test_update_user_not_found(client):
