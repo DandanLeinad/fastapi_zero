@@ -93,19 +93,17 @@ def test_delete_user_not_found(client):
 
 
 def test_read_user_success(client):
-    # cria um usuário para garantir que exista
     create_resp = client.post(
         "/users/",
         json={
-            "username": "charlie",
-            "email": "charlie@example.com",
+            "username": "xavier",
+            "email": "xavier@example.com",
             "password": "secret",
         },
     )
     assert create_resp.status_code == HTTPStatus.CREATED
     user_data = create_resp.json()
 
-    # obtém usuário criado
     get_resp = client.get(f"/users/{user_data['id']}")
     assert get_resp.status_code == HTTPStatus.OK
     assert get_resp.json() == user_data
