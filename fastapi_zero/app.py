@@ -102,7 +102,7 @@ def update_user(user: UserSchema, user_id: int, session=Depends(get_session)):
 
 
 @app.delete(
-    "/users/{user_id}", status_code=HTTPStatus.OK, response_model=UserPublic
+    "/users/{user_id}", status_code=HTTPStatus.OK, response_model=Message
 )
 def delete_user(user_id: int, session=Depends(get_session)):
     user_db = session.scalar(select(User).where(User.id == user_id))
@@ -115,4 +115,4 @@ def delete_user(user_id: int, session=Depends(get_session)):
     session.delete(user_db)
     session.commit()
 
-    return user_db
+    return {"message": "User deleted"}
