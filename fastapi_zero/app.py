@@ -18,8 +18,9 @@ database = []
 
 
 @app.get("/", status_code=HTTPStatus.OK, response_model=Message)
-def read_root():
-    return {"message": "Olá, Mundo!"}
+def read_root(session=Depends(get_session)):
+    users = session.scalars(select(User))
+    return {"users": users}
 
 
 @app.post("/users/", status_code=HTTPStatus.CREATED, response_model=UserPublic)
