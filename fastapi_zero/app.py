@@ -81,14 +81,23 @@ def read_user(user_id: int):
 @app.put(
     "/users/{user_id}", status_code=HTTPStatus.OK, response_model=UserPublic
 )
-def update_user(user: UserSchema, user_id: int):
-    if user_id > len(database) or user_id < 1:
+def update_user(user: UserSchema, user_id: int, session=Depends(get_session)):
+    user_db = session.scalar(select(User).where(User.id == user_id))
+
+    if not user_db:
         raise HTTPException(
             status_code=HTTPStatus.NOT_FOUND, detail="User not found"
         )
-    user_with_id = UserDB(id=user_id, **user.model_dump())
-    database[user_id - 1] = user_with_id
-    return user_with_id
+
+    user_db.email = user.email
+    user_db.username = user.username
+    user_db.password = user.password
+
+    session.add(user_db)
+    session.commit()
+    session.refresh(user_db)
+
+    return user_db
 
 
 @app.delete(
