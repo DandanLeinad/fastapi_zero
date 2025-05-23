@@ -18,9 +18,8 @@ database = []
 
 
 @app.get("/", status_code=HTTPStatus.OK, response_model=Message)
-def read_root(session=Depends(get_session)):
-    users = session.scalars(select(User))
-    return {"users": users}
+def read_root():
+    return {"message": "Olá, Mundo!"}
 
 
 @app.post("/users/", status_code=HTTPStatus.CREATED, response_model=UserPublic)
@@ -58,8 +57,9 @@ def create_user(user: UserSchema, session=Depends(get_session)):
 
 
 @app.get("/users/", status_code=HTTPStatus.OK, response_model=UserList)
-def read_users():
-    return {"users": database}
+def read_users(session=Depends(get_session)):
+    users = session.scalars(select(User))
+    return {"users": users}
 
 
 @app.get(
