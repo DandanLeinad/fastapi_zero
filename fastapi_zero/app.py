@@ -9,7 +9,6 @@ from fastapi_zero.models import User
 from fastapi_zero.schemas import Message, UserList, UserPublic, UserSchema
 
 app = FastAPI(title="FastAPI Zero")
-database = []
 
 
 @app.get("/", status_code=HTTPStatus.OK, response_model=Message)
@@ -62,15 +61,17 @@ def read_users(session=Depends(get_session), limit: int = 10, offset: int = 0):
     status_code=HTTPStatus.OK,
     response_model=UserPublic,
 )
-def read_user(user_id: int):
+def read_user(user_id: int, session=Depends(get_session)):
     """
-    Recupera um usuário por ID.
+    Recupera um usuário por ID usando o banco de dados.
     """
-    if user_id > len(database) or user_id < 1:
+    user_db = session.scalar(select(User).where(User.id == user_id))
+    if not user_db:
         raise HTTPException(
-            status_code=HTTPStatus.NOT_FOUND, detail="User not found"
+            status_code=HTTPStatus.NOT_FOUND,
+            detail="User not found",
         )
-    return database[user_id - 1]
+    return user_db
 
 
 @app.put(
