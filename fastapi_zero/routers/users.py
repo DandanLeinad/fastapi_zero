@@ -11,10 +11,8 @@ from fastapi_zero.security import get_current_user, get_password_hash
 
 router = APIRouter(prefix="/users", tags=["users"])
 
-app = APIRouter()
 
-
-@app.post("/users/", status_code=HTTPStatus.CREATED, response_model=UserPublic)
+@router.post("/", status_code=HTTPStatus.CREATED, response_model=UserPublic)
 def create_user(user: UserSchema, session=Depends(get_session)):
 
     db_user = session.scalar(
@@ -48,7 +46,7 @@ def create_user(user: UserSchema, session=Depends(get_session)):
     return db_user
 
 
-@app.get("/users/", status_code=HTTPStatus.OK, response_model=UserList)
+@router.get("/", status_code=HTTPStatus.OK, response_model=UserList)
 def read_users(
     session=Depends(get_session),
     limit: int = 10,
@@ -59,8 +57,8 @@ def read_users(
     return {"users": users}
 
 
-@app.get(
-    "/users/{user_id}",
+@router.get(
+    "/{user_id}",
     status_code=HTTPStatus.OK,
     response_model=UserPublic,
 )
@@ -77,9 +75,7 @@ def read_user(user_id: int, session=Depends(get_session)):
     return user_db
 
 
-@app.put(
-    "/users/{user_id}", status_code=HTTPStatus.OK, response_model=UserPublic
-)
+@router.put("/{user_id}", status_code=HTTPStatus.OK, response_model=UserPublic)
 def update_user(
     user: UserSchema,
     user_id: int,
@@ -107,9 +103,7 @@ def update_user(
         )
 
 
-@app.delete(
-    "/users/{user_id}", status_code=HTTPStatus.OK, response_model=Message
-)
+@router.delete("/{user_id}", status_code=HTTPStatus.OK, response_model=Message)
 def delete_user(
     user_id: int,
     session=Depends(get_session),
