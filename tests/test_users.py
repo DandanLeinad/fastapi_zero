@@ -102,6 +102,34 @@ def test_read_user_not_found(client):
     assert response.json()["detail"] == "User not found"
 
 
+def test_update_integrity_error(client, user, token):
+    # Criando um registro para "fausto"
+    client.post(
+        "/users",
+        json={
+            "username": "fausto",
+            "email": "fausto@example.com",
+            "password": "secret",
+        },
+    )
+
+    # Alterando o user.username das fixture para fausto
+    response_update = client.put(
+        f"/users/{user.id}",
+        headers={"Authorization": f"Bearer {token}"},
+        json={
+            "username": "fausto",
+            "email": "bob@example.com",
+            "password": "mynewpassword",
+        },
+    )
+
+    assert response_update.status_code == HTTPStatus.CONFLICT
+    assert response_update.json() == {
+        "detail": "Username or Email already exists"
+    }
+
+
 def test_create_user_username_conflict(client, user):
     response = client.post(
         "/users/",
