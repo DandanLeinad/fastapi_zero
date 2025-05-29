@@ -14,7 +14,6 @@ router = APIRouter(prefix="/users", tags=["users"])
 
 @router.post("/", status_code=HTTPStatus.CREATED, response_model=UserPublic)
 def create_user(user: UserSchema, session=Depends(get_session)):
-
     db_user = session.scalar(
         select(User).where(
             (User.username == user.username) | (User.email == user.email)
