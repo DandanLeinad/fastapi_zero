@@ -17,4 +17,3 @@ def test_read_deve_retornar_ola_mundo(client):
     response = client.get("/users/999")
     assert response.status_code == HTTPStatus.NOT_FOUND
     assert response.json()["detail"] == "User not found"
-
