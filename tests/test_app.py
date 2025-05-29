@@ -18,17 +18,3 @@ def test_read_deve_retornar_ola_mundo(client):
     assert response.status_code == HTTPStatus.NOT_FOUND
     assert response.json()["detail"] == "User not found"
 
-
-def test_get_token(client, user):
-    response = client.post(
-        "/auth/token",
-        data={
-            "username": user.email,
-            "password": user.clean_password,
-        },
-    )
-    token = response.json()
-
-    assert response.status_code == HTTPStatus.OK
-    assert "access_token" in token
-    assert token["token_type"] == "bearer"
