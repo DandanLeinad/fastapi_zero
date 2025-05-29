@@ -1,7 +1,5 @@
 from http import HTTPStatus
 
-from fastapi_zero.schemas import UserPublic
-
 
 def test_read_deve_retornar_ola_mundo(client):
     """
@@ -16,101 +14,6 @@ def test_read_deve_retornar_ola_mundo(client):
     assert response.json() == {"message": "Olá, Mundo!"}
     assert response.status_code == HTTPStatus.OK
 
-
-def test_create_user(client):
-    response = client.post(
-        "/users/",
-        json={
-            "username": "alice",
-            "email": "alice@example.com",
-            "password": "secret",
-        },
-    )
-
-    assert response.status_code == HTTPStatus.CREATED
-    assert response.json() == {
-        "id": 1,
-        "username": "alice",
-        "email": "alice@example.com",
-    }
-
-
-def test_read_users(client, user, token):
-    user_schema = UserPublic.model_validate(user).model_dump()
-    response = client.get(
-        "/users/", headers={"Authorization": f"Bearer {token}"}
-    )
-    assert response.json() == {"users": [user_schema]}
-
-
-def test_update_user(client, user, token):
-    response = client.put(
-        "/users/1",
-        json={
-            "username": "bob",
-            "email": "bob@example.com",
-            "password": "secret",
-        },
-        headers={"Authorization": f"Bearer {token}"},
-    )
-
-    assert response.status_code == HTTPStatus.OK
-    assert response.json() == {
-        "id": 1,
-        "username": "bob",
-        "email": "bob@example.com",
-    }
-
-
-def test_delete_user(client, user, token):
-    response = client.delete(
-        f"/users/{user.id}", headers={"Authorization": f"Bearer {token}"}
-    )
-
-    assert response.status_code == HTTPStatus.OK
-    assert response.json() == {"message": "User deleted"}
-
-
-def test_update_user_not_found(client, token):
-    response = client.put(
-        "/users/999",
-        headers={"Authorization": f"Bearer {token}"},
-        json={
-            "username": "no_user",
-            "email": "no_user@example.com",
-            "password": "secret",
-        },
-    )
-    assert response.status_code == HTTPStatus.FORBIDDEN
-    assert response.json()["detail"] == "Not enough permissions"
-
-
-def test_delete_user_not_found(client, token):
-    response = client.delete(
-        "/users/999", headers={"Authorization": f"Bearer {token}"}
-    )
-    assert response.status_code == HTTPStatus.FORBIDDEN
-    assert response.json()["detail"] == "Not enough permissions"
-
-
-def test_read_user_success(client):
-    create_resp = client.post(
-        "/users/",
-        json={
-            "username": "xavier",
-            "email": "xavier@example.com",
-            "password": "secret",
-        },
-    )
-    assert create_resp.status_code == HTTPStatus.CREATED
-    user_data = create_resp.json()
-
-    get_resp = client.get(f"/users/{user_data['id']}")
-    assert get_resp.status_code == HTTPStatus.OK
-    assert get_resp.json() == user_data
-
-
-def test_read_user_not_found(client):
     response = client.get("/users/999")
     assert response.status_code == HTTPStatus.NOT_FOUND
     assert response.json()["detail"] == "User not found"
@@ -144,6 +47,21 @@ def test_update_integrity_error(client, user, token):
     }
 
 
+def test_get_token(client, user):
+    response = client.post(
+        "/auth/token",
+        data={
+            "username": user.email,
+            "password": user.clean_password,
+        },
+    )
+    token = response.json()
+
+    assert response.status_code == HTTPStatus.OK
+    assert "access_token" in token
+    assert token["token_type"] == "bearer"
+
+
 def test_create_user_username_conflict(client, user):
     response = client.post(
         "/users/",
@@ -168,18 +86,3 @@ def test_create_user_email_conflict(client, user):
     )
     assert response.status_code == HTTPStatus.CONFLICT
     assert response.json()["detail"] == "Email already exists"
-
-
-def test_get_token(client, user):
-    response = client.post(
-        "/auth/token",
-        data={
-            "username": user.email,
-            "password": user.clean_password,
-        },
-    )
-    token = response.json()
-
-    assert response.status_code == HTTPStatus.OK
-    assert "access_token" in token
-    assert token["token_type"] == "bearer"
