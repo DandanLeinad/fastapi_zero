@@ -12,9 +12,7 @@ from sqlalchemy.orm import Session
 from fastapi_zero.database import get_session
 from fastapi_zero.models import User
 
-SECRET_KEY = "your_secret_key"
-ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRATION_MINUTES = 30
+
 
 pwd_context = PasswordHash.recommended()
 
