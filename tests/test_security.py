@@ -3,12 +3,9 @@ from http import HTTPStatus
 from jwt import decode
 
 from fastapi_zero.security import create_access_token
-from fastapi_zero.settings import Settings
-
-settings = Settings()
 
 
-def test_jwt():
+def test_jwt(settings):
     data = {"test": "test"}
     token = create_access_token(data)
 
