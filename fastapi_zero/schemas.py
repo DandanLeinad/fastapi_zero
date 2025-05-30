@@ -1,4 +1,4 @@
-from pydantic import BaseModel, ConfigDict, EmailStr
+from pydantic import BaseModel, ConfigDict, EmailStr, Field
 
 
 class Message(BaseModel):
@@ -28,5 +28,12 @@ class Token(BaseModel):
 
 
 class FilterPage(BaseModel):
-    limit: int = 10
-    offset: int = 0
+    limit: int = Field(
+        default=10, ge=0, description="Number of items per page"
+    )
+    offset: int = Field(
+        default=0,
+        ge=0,
+        description="Number of items to skip before starting \
+            to collect the result set",
+    )
