@@ -29,11 +29,10 @@ class Token(BaseModel):
 
 class FilterPage(BaseModel):
     limit: int = Field(
-        default=10, ge=0, description="Number of items per page"
+        default=10,
+        ge=0,
     )
     offset: int = Field(
         default=0,
         ge=0,
-        description="Number of items to skip before starting \
-            to collect the result set",
     )
