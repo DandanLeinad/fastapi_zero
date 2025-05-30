@@ -17,6 +17,10 @@ pwd_context = PasswordHash.recommended()
 settings = Settings()
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="auth/token")
 
+# expose for tests
+SECRET_KEY = settings.SECRET_KEY
+ALGORITHM = settings.ALGORITHM
+
 
 def get_password_hash(password: str):
     return pwd_context.hash(password)
