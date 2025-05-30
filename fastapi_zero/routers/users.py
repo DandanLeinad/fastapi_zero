@@ -12,12 +12,12 @@ from fastapi_zero.schemas import Message, UserList, UserPublic, UserSchema
 from fastapi_zero.security import get_current_user, get_password_hash
 
 router = APIRouter(prefix="/users", tags=["users"])
-Session = Annotated[Session, Depends(get_session)]
-CurrentUser = Annotated[User, Depends(get_current_user)]
+T_Session = Annotated[Session, Depends(get_session)]
+T_CurrentUser = Annotated[User, Depends(get_current_user)]
 
 
 @router.post("/", status_code=HTTPStatus.CREATED, response_model=UserPublic)
-def create_user(user: UserSchema, session: Session):
+def create_user(user: UserSchema, session: T_Session):
     db_user = session.scalar(
         select(User).where(
             (User.username == user.username) | (User.email == user.email)
@@ -51,8 +51,8 @@ def create_user(user: UserSchema, session: Session):
 
 @router.get("/", status_code=HTTPStatus.OK, response_model=UserList)
 def read_users(
-    session: Session,
-    current_user: CurrentUser,
+    session: T_Session,
+    current_user: T_CurrentUser,
     limit: int = 10,
     offset: int = 0,
 ):
@@ -65,7 +65,7 @@ def read_users(
     status_code=HTTPStatus.OK,
     response_model=UserPublic,
 )
-def read_user(user_id: int, session: Session):
+def read_user(user_id: int, session: T_Session):
     """
     Recupera um usuário por ID usando o banco de dados.
     """
@@ -82,8 +82,8 @@ def read_user(user_id: int, session: Session):
 def update_user(
     user: UserSchema,
     user_id: int,
-    session: Session,
-    current_user: CurrentUser,
+    session: T_Session,
+    current_user: T_CurrentUser,
 ):
     if current_user.id != user_id:
         raise HTTPException(
@@ -109,8 +109,8 @@ def update_user(
 @router.delete("/{user_id}", status_code=HTTPStatus.OK, response_model=Message)
 def delete_user(
     user_id: int,
-    session: Session,
-    current_user: CurrentUser,
+    session: T_Session,
+    current_user: T_CurrentUser,
 ):
     if current_user.id != user_id:
         raise HTTPException(
