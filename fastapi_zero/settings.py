@@ -1,7 +1,4 @@
-from fastapi_zero.settings import Settings
 from pydantic_settings import BaseSettings, SettingsConfigDict
-
-settings = Settings()
 
 
 class Settings(BaseSettings):
@@ -11,8 +8,6 @@ class Settings(BaseSettings):
     )
 
     DATABASE_URL: str
-    SECRET_KEY: str = settings.SECRET_KEY
-    ALGORITHM: str = settings.ALGORITHM
-    ACCESS_TOKEN_EXPIRATION_MINUTES: int = (
-        settings.ACCESS_TOKEN_EXPIRATION_MINUTES
-    )
+    SECRET_KEY: str
+    ALGORITHM: str
+    ACCESS_TOKEN_EXPIRATION_MINUTES: int
