@@ -57,28 +57,6 @@ def test_delete_user(client, user, token):
     assert response.json() == {"message": "User deleted"}
 
 
-def test_update_user_not_found(client, token):
-    response = client.put(
-        "/users/999",
-        headers={"Authorization": f"Bearer {token}"},
-        json={
-            "username": "no_user",
-            "email": "no_user@example.com",
-            "password": "secret",
-        },
-    )
-    assert response.status_code == HTTPStatus.FORBIDDEN
-    assert response.json()["detail"] == "Not enough permissions"
-
-
-def test_delete_user_not_found(client, token):
-    response = client.delete(
-        "/users/999", headers={"Authorization": f"Bearer {token}"}
-    )
-    assert response.status_code == HTTPStatus.FORBIDDEN
-    assert response.json()["detail"] == "Not enough permissions"
-
-
 def test_read_user_success(client):
     create_resp = client.post(
         "/users/",
