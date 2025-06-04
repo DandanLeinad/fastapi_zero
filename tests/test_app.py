@@ -1,5 +1,7 @@
 from http import HTTPStatus
 
+from fastapi_zero.security import create_access_token
+
 
 def test_read_deve_retornar_ola_mundo(client):
     """
@@ -17,3 +19,19 @@ def test_read_deve_retornar_ola_mundo(client):
     response = client.get("/users/999")
     assert response.status_code == HTTPStatus.NOT_FOUND
     assert response.json()["detail"] == "User not found"
+
+
+def test_get_current_user_not_found__exercicio(client):
+    """
+    Verifica que a autenticação falha quando o token não contém 'sub' (e-mail).
+    """
+    data = {"no-email": "test"}
+    token = create_access_token(data)
+
+    response = client.delete(
+        "/users/1",
+        headers={"Authorization": f"Bearer {token}"},
+    )
+
+    assert response.status_code == HTTPStatus.UNAUTHORIZED
+    assert response.json() == {"detail": "Could not validate credentials"}
