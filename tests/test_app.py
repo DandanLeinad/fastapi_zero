@@ -35,3 +35,20 @@ def test_get_current_user_not_found__exercicio(client):
 
     assert response.status_code == HTTPStatus.UNAUTHORIZED
     assert response.json() == {"detail": "Could not validate credentials"}
+
+
+def test_get_current_user_does_not_exists__exercicio(client):
+    """
+    Verifica que a autenticação falha quando o token contém 'sub',
+    mas não existe um usuário com esse email.
+    """
+    data = {"sub": "test@test"}
+    token = create_access_token(data)
+
+    response = client.delete(
+        "/users/1",
+        headers={"Authorization": f"Bearer {token}"},
+    )
+
+    assert response.status_code == HTTPStatus.UNAUTHORIZED
+    assert response.json() == {"detail": "Could not validate credentials"}
