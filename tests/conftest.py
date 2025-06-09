@@ -6,7 +6,6 @@ import pytest_asyncio
 from fastapi.testclient import TestClient
 from sqlalchemy import StaticPool, event
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
-from sqlalchemy.orm import Session
 
 from fastapi_zero.app import app
 from fastapi_zero.database import get_session

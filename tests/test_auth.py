@@ -33,7 +33,8 @@ def test_current_user_no_sub_raises_unauthorized(client):
 
 def test_current_user_sub_not_found_raises_unauthorized(client):
     """
-    Token com 'sub' mas sem usuário correspondente deve levar a credentials_exception.
+    Token com 'sub' mas sem usuário correspondente deve levar a
+    credentials_exception.
     """
     data = {"sub": "noone@example.com"}
     token = create_access_token(data)
