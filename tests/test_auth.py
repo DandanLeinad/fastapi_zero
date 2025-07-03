@@ -20,6 +20,15 @@ def test_get_token(client, user):
     assert token["token_type"] == "bearer"
 
 
+def test_token_inexistent_user(client):
+    response = client.post(
+        "/auth/token",
+        data={"username": "no_user@no_domain.com", "password": "testtest"},
+    )
+    assert response.status_code == HTTPStatus.UNAUTHORIZED
+    assert response.json() == {"detail": "Incorrect email or password"}
+
+
 def test_current_user_no_sub_raises_unauthorized(client):
     """
     Token sem 'sub' deve levar a credentials_exception.
