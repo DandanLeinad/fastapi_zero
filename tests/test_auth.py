@@ -29,6 +29,15 @@ def test_token_inexistent_user(client):
     assert response.json() == {"detail": "Incorrect email or password"}
 
 
+def test_token_wrong_password(client, user):
+    response = client.post(
+        "/auth/token",
+        data={"username": user.email, "password": "wrong_password"},
+    )
+    assert response.status_code == HTTPStatus.UNAUTHORIZED
+    assert response.json() == {"detail": "Incorrect email or password"}
+
+
 def test_current_user_no_sub_raises_unauthorized(client):
     """
     Token sem 'sub' deve levar a credentials_exception.
