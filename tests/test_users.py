@@ -132,3 +132,17 @@ def test_create_user_email_conflict(client, user):
     )
     assert response.status_code == HTTPStatus.CONFLICT
     assert response.json()["detail"] == "Email already exists"
+
+
+def test_update_user_with_wrong_user(client, user, token):
+    response = client.put(
+        f"/users/{user.id + 1}",
+        headers={"Authorization": f"Bearer {token}"},
+        json={
+            "username": "bob",
+            "email": "bob@example.com",
+            "password": "mynewpassword",
+        },
+    )
+    assert response.status_code == HTTPStatus.FORBIDDEN
+    assert response.json() == {"detail": "Not enough permissions"}
