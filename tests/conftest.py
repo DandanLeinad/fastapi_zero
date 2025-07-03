@@ -75,6 +75,19 @@ async def user(session: AsyncSession):
     return user
 
 
+@pytest_asyncio.fixture
+async def other_user(session: AsyncSession):
+    password = "testtest"
+    user = UserFactory(password=get_password_hash(password))
+    session.add(user)
+    await session.commit()
+    await session.refresh(user)
+
+    user.clean_password = password
+
+    return user
+
+
 @pytest.fixture
 def token(client, user):
     response = client.post(
